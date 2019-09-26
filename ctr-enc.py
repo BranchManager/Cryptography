@@ -22,7 +22,7 @@ def CTR(blocks,outfile,key):
 
 if __name__=="__main__":
 
-	infile,outfile,key = parse_args()
+	infile,outfile,key = argparse()
 	
 	f = open(infile,'rb')
 	inn = f.read()

@@ -1,7 +1,7 @@
 import argparse
 
 import sys
-sys.path.insert("./PyPl")
+sys.path.insert(1,"../PyPl/PyPl")
 
 from Crypto.Cipher import AES
 #from Crypto.Util.Padding import pad
@@ -9,6 +9,21 @@ from Crypto.Util.strxor import strxor
 from sys import getsizeof
 from Crypto.Random import get_random_bytes
 BLOCK_SIZE = 16
+
+def parse_args():
+	parser = argparse.ArgumentParser()
+	parser.add_argument("-k","--key",help="key")
+	parser.add_argument("-i","--input",help="input file")
+	parser.add_argument("-o","--output",help="output file")
+	args=parser.parse_args()
+
+	if args.key:
+		key = args.key
+	if args.input:
+		infile = args.input
+	if args.output:
+		outfile = args.output
+	return key,infile,outfile
 
 def parse_args_mac():
 	parser = argparse.ArgumentParser()
@@ -77,7 +92,8 @@ def encrypt(key,block):
 def cbcmac(key,message_blocks,cbcmac_flag):
 	print(len(key))
 	exit()
-	#exit()
+#<<<<<<< Updated upstream
+#>>>>>>> Stashed changes
 	iv = 0
 	cipherblocks=[]
 	if cbcmac_flag == 1:
