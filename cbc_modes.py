@@ -27,16 +27,24 @@ def padit(data_to_pad):
 	#print(length)
 	pad = b'\x78'
 	if(length%BLOCK_SIZE)==0:
-		return data_to_pad
+		return data_to_pad + b'\x10'*length
 	elif length < BLOCK_SIZE:
 		#print(length)
 		pad_len = BLOCK_SIZE - length
+		pad = bytes(chr(pad_len),'utf-8')
+		print(pad)
 		padded_data = data_to_pad + pad *pad_len
 		#print(data_to_pad)
 		return padded_data
 	elif (length>BLOCK_SIZE)!=0:
 		pad_len = BLOCK_SIZE-(length%BLOCK_SIZE)
+
 		#padded_data=data_to_pad + bytes(pad_len,"x")
+		pad = bytes(chr(pad_len),'utf-8')
+		print(pad_len)
+		print(pad)
+		
+		#exit()
 		padded_data = data_to_pad + pad * pad_len
 		# print(type(padded_data))
 		# print(padded_data)
@@ -65,6 +73,7 @@ def encrypt(key,block):
 def cbcmac(key,message_blocks,cbcmac_flag):
 	print(len(key))
 	#exit()
+	iv = 0
 	cipherblocks=[]
 	if cbcmac_flag == 1:
 		cipherblock = b'\x00'*16
@@ -75,7 +84,8 @@ def cbcmac(key,message_blocks,cbcmac_flag):
 	print(len(message_blocks[0]))
 	print(len(cipherblock))
 	print(len(message_blocks))
-	for i in range(len(message_blocks)):
+	for i in range(0,(len(message_blocks)-1)):
+		print(i)
 		print("xor length")
 		print(len(cipherblock))
 		print(message_blocks[i])
@@ -92,30 +102,39 @@ def cbcmac(key,message_blocks,cbcmac_flag):
 	
 
 #def tag_it(key):
-print("hello here")
-if __name__=="__main__":
-	messagef,tagf,keyf = parse_args_mac()
+# print("hello here")
+# if __name__=="__main__":
+# 	messagef,tagf,keyf = parse_args_mac()
 
-	omessagf=open(messagef,'rb')
-	message = omessagf.read()
+# 	omessagf=open(messagef,'rb')
+# 	message = omessagf.read()
 
-	okeyf = open(keyf)
-	key = okeyf.read()
+# 	okeyf = open(keyf)
+# 	key = okeyf.read()
 
-	padded_message = padit(message)
-	print(len(message))
-	print(len(padded_message))
-	print(type(padded_message))
+# 	padded_message = padit(message)
+# 	print(len(message))
+# 	print(len(padded_message))
+# 	print(type(padded_message))
 
-	blocks=divide_into_blocks(padded_message)
+# 	blocks=divide_into_blocks(padded_message)
 
 	
 	
-	print(key)
-	bytekey = bytes.fromhex(key)
-	print(len(bytekey))
-	#exit()
-	the_tag,cipherblocks,iv = cbcmac(bytekey,blocks,1)
+# 	print(key)
+# 	bytekey = bytes.fromhex(key)
+# 	print(len(bytekey))
+# 	#exit()
+# 	the_tag,cipherblocks,iv = cbcmac(bytekey,blocks,1)
+
+# 	hextag = the_tag.hex()
+# 	print(hextag)
+
+# 	otagf = open(tagf,'w')
+# 	otagf.write(hextag)
+	
+	
+	
 	
 
 	
