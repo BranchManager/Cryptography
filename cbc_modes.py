@@ -76,6 +76,7 @@ def encrypt(key,block):
 
 def cbcmac(key,message_blocks,cbcmac_flag):
 	print(len(key))
+	exit()
 	#exit()
 	iv = 0
 	cipherblocks=[]
