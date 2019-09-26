@@ -1,34 +1,4 @@
-import argparse
-from Crypto.Cipher import AES
-from Crypto.Util.strxor import strxor
-from sys import getsizeof
-BLOCK_SIZE = 16
-
-def parse_args():
-	parser = argparse.ArgumentParser()
-	parser.add_argument("-i","--input",help="input file")
-	parser.add_argument("-o","--output",help="output file")
-	parser.add_argument("-k","--key",help="key file")
-	args=parser.parse_args()
-
-	if args.input:
-		inputf = args.input
-	if args.output:
-		outputf = args.output
-	if args.key:
-		keyf = args.key
-	return inputf, outputf, keyf
-
-
-
-def divide_into_blocks(message):
-        print("hello")
-        blocks = []
-        #print("foor loop2")
-        for i in range((len(message) // 16) + 1):
-                #print(message[i * 16: (i +1) * 16])
-                blocks.append(bytes(message[i * 16: (i +1) * 16]))
-        return blocks
+from cbc_modes import *
 
 def CTR(blocks,outfile,key):	
 	i = 1
