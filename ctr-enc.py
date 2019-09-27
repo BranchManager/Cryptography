@@ -1,15 +1,13 @@
 from cbc_modes import *
 
 def CTR(blocks,outfile,key):	
-
 	print("BLOCK START")
 	print(blocks)
 	
-
 	i = 0
 	x = 1
 	cText = []
-
+	
 	
 	num_of_blocks_arr = range(0,len(blocks))
 	print(num_of_blocks_arr)
@@ -109,7 +107,6 @@ def CTR(blocks,outfile,key):
 	# 	file.write(i)
 
 
-
 if __name__=="__main__":
 
 	key,infile,outfile = parse_args()
@@ -127,11 +124,9 @@ if __name__=="__main__":
 
 	bytekey = bytes.fromhex(keyinn)
 
-
-	paddedstring = padit(inn,1)
+	#paddedstring = padit(inn,1)
 	
 
-	blockArr = divide_into_blocks(paddedstring)
-
+	blockArr = divide_into_blocks(inn)
 	
 	CTR(blockArr,outfile,bytekey)
