@@ -92,7 +92,7 @@ def encrypt(key,block):
 
 def cbcmac(key,message_blocks,cbcmac_flag):
 	print(len(key))
-	#exit()
+
 #<<<<<<< Updated upstream
 #>>>>>>> Stashed changes
 	iv = 0
