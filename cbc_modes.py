@@ -4,10 +4,11 @@ import sys
 sys.path.insert(1,"../PyPl/PyPl")
 
 from Crypto.Cipher import AES
-#from Crypto.Util.Padding import pad
+from multiprocessing import Pool
 from Crypto.Util.strxor import strxor
 from sys import getsizeof
 from Crypto.Random import get_random_bytes
+from Crypto.Util.number import long_to_bytes
 BLOCK_SIZE = 16
 
 def parse_args():
@@ -91,7 +92,7 @@ def encrypt(key,block):
 
 def cbcmac(key,message_blocks,cbcmac_flag):
 	print(len(key))
-	exit()
+
 #<<<<<<< Updated upstream
 #>>>>>>> Stashed changes
 	iv = 0

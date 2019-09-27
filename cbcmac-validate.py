@@ -28,10 +28,12 @@ if __name__=="__main__":
 	hextag = the_tag.hex()
 	print(hextag)
 
-	otagf = open(tagf,'r')
+	otagf = open(tagf,'rb')
 	tag_to_check = otagf.read()
 
-	if tag_to_check == hextag:
+	#notice we can compare strings to 
+	#the_tag is byte string of hextag (hex string)
+	if tag_to_check == the_tag:
 		print("True")
 	else:
 		print("False")
