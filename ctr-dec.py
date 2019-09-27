@@ -1,6 +1,7 @@
 from cbc_modes import *
 
 def CTRdec(blocks,outfile,key):	
+
 	
 	print(blocks)
 	
@@ -82,12 +83,16 @@ def CTRdec(blocks,outfile,key):
 	# file.write(cText)
 
 
+
 if __name__=="__main__":
 
+
 	key,infile,outfile = parse_args()
+
 	
 	f = open(infile,'rb')
 	inn = f.read()
+
 
 
 	fkey = open(key,'r')
@@ -105,3 +110,4 @@ if __name__=="__main__":
 	print(blockArr)
 	
 	CTRdec(blockArr,outfile,bytekey)
+
