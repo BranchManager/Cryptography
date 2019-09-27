@@ -1,45 +1,62 @@
 from cbc_modes import *
 
+
 def cbcDec(blocks,outfile,key):	
 	
-	i = len(blocks)-1
+	i = len(blocks)-2
 	cText = []
 	
 		
 	cipher = AES.new(key,AES.MODE_ECB)
+	
+	reth = key
+	IV = cipher.encrypt(reth[16:])
+	print (len(IV))
 
 	while i > 0:
+
+
 		cNext = strxor(cipher.decrypt(blocks[i]),blocks[i-1])
-		cText.prepend(cNext)
+		cText.insert(0,cNext)
 		i = i-1
+
 	
-	IV = cipher.encrypt(key)
-	cText.prepend(strxor(cipher.decrypt(blocks[i]),IV))
+	cText.insert(0,strxor(cipher.decrypt(blocks[i]),IV))
 	
 	#remove padding
 
 	pBlock = cText[len(cText)-1]
-	rem = pBlock[len(pBlock)-1]
+	print(pBlock)
+	rem = BLOCK_SIZE- pBlock[len(pBlock)-1]
+	pBlock = pBlock[:rem]
+	
+	print(pBlock)
 
-	while rem > 0:
-		pBlock.remove(pBlock[len(pByte)-1])
-		rem = rem -1
+	file = open(outfile,"wb")
+	
+	for i in cText:
 
-	file = open(outfile,"w")
-	file.write(cText)
+		file.write(i)
 	
 
 
 if __name__=="__main__":
 
-	infile,outfile,key = parse_args()
+	key,infile,outfile = parse_args()
 	
 	f = open(infile,'rb')
 	inn = f.read()
-
+	
+	print(key)
 	fkey = open(key,'r')
 	keyinn = fkey.read()
+	
+	print(keyinn)
+	keyinn = keyinn.rstrip(' \t\r\n\0') 
+	
+	bytekey = bytes.fromhex(keyinn)
+	print(len(bytekey))
 
 	blockArr = divide_into_blocks(inn)
 	
-	CbcDec(blockArr,outfile,key)
+	cbcDec(blockArr,outfile,bytekey)
