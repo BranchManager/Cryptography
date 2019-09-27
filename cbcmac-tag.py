@@ -7,9 +7,9 @@ if __name__=="__main__":
 	omessagf=open(messagef,'rb')
 	message = omessagf.read()
 
-	okeyf = open(keyf)
+	okeyf = open(keyf,'r')
 	key = okeyf.read()
-
+	
 	padded_message = padit(message)
 	print(len(message))
 	print(len(padded_message))
@@ -20,6 +20,7 @@ if __name__=="__main__":
 	
 	
 	print(key)
+	print(len(key))
 	bytekey = bytes.fromhex(key)
 	print(len(bytekey))
 	#exit()
