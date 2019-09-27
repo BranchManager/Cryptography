@@ -2,48 +2,40 @@ print("asdfjqwer")
 
 from cbc_modes import *
 
-def parse_args():
-	parser = argparse.ArgumentParser()
-	parser.add_argument("-k","--key",help="key")
-	parser.add_argument("-i","--input",help="input file")
-	parser.add_argument("-o","--output",help="output file")
-	args=parser.parse_args()
-
-	if args.key:
-		key = args.key
-	if args.input:
-		infile = args.input
-	if args.output:
-		outfile = args.output
-	return key,infile,outfile
-
-
-
 def CBC(blocks,outfile,key):
+	
 	i = 1
 	
 	cText = []
 	
 	cipher = AES.new(key,AES.MODE_ECB)
 	
-	IV = cipher.encrypt(key)
+	IV = get_random_bytes(16)
 	
+	print(len(IV))
+	print(len(blocks[0]))
+	
+
 	cNext = cipher.encrypt(strxor(IV,blocks[0]))
 
+	
+
 	cText.append(cNext)
 
-	while(i < len(blocks)):
+	while(i < len(blocks)-1):
 		
-		print("dalsdkfakf")
+		print(len(cNext))
+		print(len(blocks[i]))	
+		
 		cNext = cipher.encrypt(strxor(cNext,blocks[i]))
+		
+		i = i+1	
+
+		cText.append(cNext)
 	
-	i = i+1	
-	
-	print(type(cNext))
-	cText.append(cNext)
-	
-	file = open(outfile,"w")
-	file.write(cText)
+	file = open(outfile,"wb")
+	for i in cText:
+		file.write(i)
 
 
 if __name__=="__main__":
@@ -53,12 +45,19 @@ if __name__=="__main__":
 	f = open(infile,'rb')
 	inn = f.read()
 	
-	fkey = open(key,'rb')
+
+	fkey = open(key,'r')
+	
 	keyinn = fkey.read()
+	
+	keyinn = keyinn.rstrip(' \t\r\n\0')
+	
+	print(len(keyinn))
+	bytekey = bytes.fromhex(keyinn)
 	
 	print(keyinn)
 	padText = padit(inn)
 	
 	blockArr = divide_into_blocks(padText)
 	
-	CBC(blockArr,outfile,keyinn)
+	CBC(blockArr,outfile,bytekey)
