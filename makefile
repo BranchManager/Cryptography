@@ -1,0 +1,4 @@
+make:
+	pip install pycryptodome
+
+	

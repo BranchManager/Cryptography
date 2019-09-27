@@ -37,7 +37,9 @@ def CTRdec(blocks,outfile,key):
 
 		print(decypherblock)
 
+	
 	plaintext = ""
+	
 	for i in decypherblock:
 		plaintext+=i.hex()
 	print(plaintext)
@@ -49,8 +51,9 @@ def CTRdec(blocks,outfile,key):
 	cipherstring = ""
 	
 
-	# file = open(outfile,"w")
-	# file.write(cText)
+	file = open(outfile,"wb")
+	for i in decypherblock:
+		file.write(i)
 
 
 
