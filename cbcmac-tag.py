@@ -21,13 +21,24 @@ if __name__=="__main__":
 	
 	print(key)
 	print(len(key))
+	#the following string converts hex string to byte string
 	bytekey = bytes.fromhex(key)
 	print(len(bytekey))
 	#exit()
 	the_tag,cipherblocks,iv = cbcmac(bytekey,blocks,1)
 
-	hextag = the_tag.hex()
-	print(hextag)
+	# test=int.from_bytes(the_tag,byteorder='big')
+	# print("TEST")
+	# print(test)
+	# print(long_to_bytes(test))
 
-	otagf = open(tagf,'w')
-	otagf.write(hextag)
+
+	print("real deal")
+	print(the_tag)
+
+	#the following line converts b stirng to a hex string
+	#hextag = the_tag.hex()
+	#print(hextag)
+
+	otagf = open(tagf,'wb')
+	otagf.write(the_tag)
