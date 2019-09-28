@@ -1,5 +1,3 @@
-#!/usr/bin/env python3.7
-
 from cbc_modes import *
 
 #print("hello here")

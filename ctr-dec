@@ -100,7 +100,6 @@ if __name__=="__main__":
 	inn = f.read()
 
 
-
 	fkey = open(key,'r')
 	keyinn = fkey.read()
 
