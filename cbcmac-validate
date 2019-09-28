@@ -1,6 +1,6 @@
 from cbc_modes import *
 
-print("hello here")
+#print("hello here")
 if __name__=="__main__":
 	messagef,tagf,keyf = parse_args_mac()
 
@@ -11,22 +11,22 @@ if __name__=="__main__":
 	key = okeyf.read()
 
 	padded_message = padit(message)
-	print(len(message))
-	print(len(padded_message))
-	print(type(padded_message))
+	#print(len(message))
+	#print(len(padded_message))
+	#print(type(padded_message))
 
 	blocks=divide_into_blocks(padded_message)
 
 	
 	
-	print(key)
+	#print(key)
 	bytekey = bytes.fromhex(key)
-	print(len(bytekey))
+	#print(len(bytekey))
 	#exit()
 	the_tag,cipherblocks,iv = cbcmac(bytekey,blocks,1)
 
 	hextag = the_tag.hex()
-	print(hextag)
+	#print(hextag)
 
 	otagf = open(tagf,'rb')
 	tag_to_check = otagf.read()
