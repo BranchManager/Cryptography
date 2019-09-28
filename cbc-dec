@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.6
 from cbc_modes import *
 
 
@@ -28,14 +29,14 @@ def cbcDec(blocks,outfile,key):
 	pBlock = cText[len(cText)-1]
 	print(pBlock)
 	rem = BLOCK_SIZE- pBlock[len(pBlock)-1]
-	pBlock = pBlock[:rem]
+	cText[len(cText)-1] = pBlock[:rem]
 	
 	print(pBlock)
 
 	file = open(outfile,"wb")
 	
 	for i in cText:
-
+		print(i)
 		file.write(i)
 	
 

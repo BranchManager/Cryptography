@@ -62,8 +62,11 @@ def CTRdec(blocks,outfile,key):
 		# #print(decypherblock)
 		#print(result)
 
+	
 	plaintext = ""
+
 	plaintexthex=''
+
 	for i in decypherblock:
 		#plaintext += i.decode('utf-8')
 		plaintexthex+=i.hex()
@@ -79,8 +82,9 @@ def CTRdec(blocks,outfile,key):
 	cipherstring = ""
 	
 
-	# file = open(outfile,"w")
-	# file.write(cText)
+	file = open(outfile,"wb")
+	for i in decypherblock:
+		file.write(i)
 
 
 
