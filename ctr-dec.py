@@ -3,51 +3,51 @@ from cbc_modes import *
 def CTRdec(blocks,outfile,key):	
 
 	
-	print(blocks)
+	#printblocks)
 	
 	IV = blocks[0]
 	intIV = int.from_bytes(IV,byteorder='big')
-	print(intIV)
-	print(IV)
+	#printintIV)
+	#printIV)
 	
-	print(blocks)
+	#printblocks)
 	
 	ctr_arr = []
-	print("block Len")
-	print(blocks)
-	print(len(blocks))
+	#print"block Len")
+	#printblocks)
+	#printlen(blocks))
 	
 	for i in range(1,len(blocks)):
-		print(i)
-		print("Cipher Block in dec \n")
-		print(blocks[i].hex())
+		#printi)
+		#print"Cipher Block in dec \n")
+		#printblocks[i].hex())
 		ctr=intIV+i
-		print(ctr)
-		print(ctr)
+		#printctr)
+		#printctr)
 		ctrbytes = long_to_bytes(ctr)
 		ctr_arr.append((key,ctrbytes))
 		
-	print(len(ctr_arr))
+	#printlen(ctr_arr))
 	p = Pool(5)
 	result = p.starmap(encrypt,ctr_arr)
-	print("RESLUT \n")
-	print(result)
+	#print"RESLUT \n")
+	#printresult)
 	
 
-	print(len(result))
+	#printlen(result))
 	
-	print(blocks)
+	#printblocks)
 	
 	decypherblock = []
 	for i in range(1,len(blocks)):
-		print("decrypted blocks")
-		print(blocks[i].hex())
+		#print"decrypted blocks")
+		#printblocks[i].hex())
 		if(len(result[i-1])>len(blocks[i])):
 			
 			k = len(blocks[i])
-			# print(blocks[i])
-			# print(len(result[i])-k)
-			# print(k)
+			# #printblocks[i])
+			# #printlen(result[i])-k)
+			# #printk)
 			b = result[len(result)-1]
 			result[i-1] = b[len(b)-k:]
 			
@@ -56,18 +56,18 @@ def CTRdec(blocks,outfile,key):
 		result[i-1] = xored_string
 		decypherblock.append(result[i-1])
 
-		# print("results -1 ")
-		# print(result[i-1])
-		# print(result[i-1].hex())
-		# print(decypherblock)
-		print(result)
+		# #print"results -1 ")
+		# #print(result[i-1])
+		# #print(result[i-1].hex())
+		# #print(decypherblock)
+		#print(result)
 
 	plaintext = ""
 	plaintexthex=''
 	for i in decypherblock:
-		plaintext += i.decode('utf-8')
+		#plaintext += i.decode('utf-8')
 		plaintexthex+=i.hex()
-	print(plaintext)
+	#print(plaintext)
 	
 	file = open(outfile,"wb")
 	file.write(bytes.fromhex(plaintexthex))
@@ -102,12 +102,12 @@ if __name__=="__main__":
 
 	bytekey = bytes.fromhex(keyinn)
 	
-	print(inn.hex())
+	#print(inn.hex())
 	blockArr = divide_into_blocks(inn)
 	#del blockArr[-1]
 	
 	
-	print(blockArr)
+	#print(blockArr)
 	
 	CTRdec(blockArr,outfile,bytekey)
 
