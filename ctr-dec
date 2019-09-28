@@ -1,36 +1,119 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3.7
+
 from cbc_modes import *
 
 def CTRdec(blocks,outfile,key):	
-	i = 1
-	cText = []
-	
-	cipher = AES.new(key,AES.MODE_ECB)
-	IV = cipher.encrypt(key)
-	
-	cNext = strxor(IV,blocks[0])
-	cText.append(cNext)
 
-	while(i < len(blocks)):
-		IV = IV+1
-		cNext = strxor(cipher.encrypt(IV),blocks[i])
-		i = i+1
-		cText.append(cNext)
+	
+	#printblocks)
+	
+	IV = blocks[0]
+	intIV = int.from_bytes(IV,byteorder='big')
+	#printintIV)
+	#printIV)
+	
+	#printblocks)
+	
+	ctr_arr = []
+	#print"block Len")
+	#printblocks)
+	#printlen(blocks))
+	
+	for i in range(1,len(blocks)):
+		#printi)
+		#print"Cipher Block in dec \n")
+		#printblocks[i].hex())
+		ctr=intIV+i
+		#printctr)
+		#printctr)
+		ctrbytes = long_to_bytes(ctr)
+		ctr_arr.append((key,ctrbytes))
+		
+	#printlen(ctr_arr))
+	p = Pool(5)
+	result = p.starmap(encrypt,ctr_arr)
+	#print"RESLUT \n")
+	#printresult)
+	
 
-	file = open(outfile,"w")
-	file.write(cText)
+	#printlen(result))
+	
+	#printblocks)
+	
+	decypherblock = []
+	for i in range(1,len(blocks)):
+		#print"decrypted blocks")
+		#printblocks[i].hex())
+		if(len(result[i-1])>len(blocks[i])):
+			
+			k = len(blocks[i])
+			# #printblocks[i])
+			# #printlen(result[i])-k)
+			# #printk)
+			b = result[len(result)-1]
+			result[i-1] = b[len(b)-k:]
+			
+
+		xored_string = strxor(result[i-1],blocks[i])
+		result[i-1] = xored_string
+		decypherblock.append(result[i-1])
+
+		# #print"results -1 ")
+		# #print(result[i-1])
+		# #print(result[i-1].hex())
+		# #print(decypherblock)
+		#print(result)
+
+	
+	plaintext = ""
+
+	plaintexthex=''
+
+	for i in decypherblock:
+		#plaintext += i.decode('utf-8')
+		plaintexthex+=i.hex()
+	#print(plaintext)
+	
+	file = open(outfile,"wb")
+	file.write(bytes.fromhex(plaintexthex))
+		
+		
+
+
+	
+	cipherstring = ""
+	
+
+	file = open(outfile,"wb")
+	for i in decypherblock:
+		file.write(i)
+
 
 
 if __name__=="__main__":
 
-	infile,outfile,key = parse_args()
+
+	key,infile,outfile = parse_args()
+
 	
 	f = open(infile,'rb')
 	inn = f.read()
 
+
+
 	fkey = open(key,'r')
 	keyinn = fkey.read()
 
-	blockArr = divide_into_blocks(inn)
+	keyinn = keyinn.rstrip('\t\r\n\0')
+
+	bytekey = bytes.fromhex(keyinn)
 	
-	CTRdec(blockArr,outfile,key)
+	#print(inn.hex())
+	blockArr = divide_into_blocks(inn)
+	#del blockArr[-1]
+	
+	
+	#print(blockArr)
+	
+	CTRdec(blockArr,outfile,bytekey)
+
