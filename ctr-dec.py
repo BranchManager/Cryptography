@@ -3,46 +3,77 @@ from cbc_modes import *
 def CTRdec(blocks,outfile,key):	
 
 	
-
+	#printblocks)
+	
 	IV = blocks[0]
 	intIV = int.from_bytes(IV,byteorder='big')
-	print(intIV)
-	print(blocks)
+	#printintIV)
+	#printIV)
+	
+	#printblocks)
 	
 	ctr_arr = []
+	#print"block Len")
+	#printblocks)
+	#printlen(blocks))
+	
 	for i in range(1,len(blocks)):
-		print("Cipher Block in dec \n")
-		print(blocks[i].hex())
+		#printi)
+		#print"Cipher Block in dec \n")
+		#printblocks[i].hex())
 		ctr=intIV+i
-		print(ctr)
-		print(ctr)
+		#printctr)
+		#printctr)
 		ctrbytes = long_to_bytes(ctr)
 		ctr_arr.append((key,ctrbytes))
 		
-	
+	#printlen(ctr_arr))
 	p = Pool(5)
 	result = p.starmap(encrypt,ctr_arr)
-	print("RESLUT \n")
-	print(result)
+	#print"RESLUT \n")
+	#printresult)
+	
 
-	print(len(result))
+	#printlen(result))
+	
+	#printblocks)
 	
 	decypherblock = []
 	for i in range(1,len(blocks)):
-		print("decrypted blocks")
-		print(blocks[i].hex())
+		#print"decrypted blocks")
+		#printblocks[i].hex())
+		if(len(result[i-1])>len(blocks[i])):
+			
+			k = len(blocks[i])
+			# #printblocks[i])
+			# #printlen(result[i])-k)
+			# #printk)
+			b = result[len(result)-1]
+			result[i-1] = b[len(b)-k:]
+			
+
 		xored_string = strxor(result[i-1],blocks[i])
 		result[i-1] = xored_string
 		decypherblock.append(result[i-1])
 
-		print(decypherblock)
+		# #print"results -1 ")
+		# #print(result[i-1])
+		# #print(result[i-1].hex())
+		# #print(decypherblock)
+		#print(result)
 
 	
 	plaintext = ""
-	
+
+	plaintexthex=''
+
 	for i in decypherblock:
-		plaintext+=i.hex()
-	print(plaintext)
+		#plaintext += i.decode('utf-8')
+		plaintexthex+=i.hex()
+	#print(plaintext)
+	
+	file = open(outfile,"wb")
+	file.write(bytes.fromhex(plaintexthex))
 		
 		
 
@@ -67,7 +98,7 @@ if __name__=="__main__":
 	inn = f.read()
 
 
-	
+
 	fkey = open(key,'r')
 	keyinn = fkey.read()
 
@@ -75,11 +106,12 @@ if __name__=="__main__":
 
 	bytekey = bytes.fromhex(keyinn)
 	
-
+	#print(inn.hex())
 	blockArr = divide_into_blocks(inn)
-	del blockArr[-1]
+	#del blockArr[-1]
 	
 	
+	#print(blockArr)
 	
 	CTRdec(blockArr,outfile,bytekey)
 
