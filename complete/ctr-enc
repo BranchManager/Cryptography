@@ -9,10 +9,6 @@ def CTR(blocks,outfile,key):
 	i = 0
 	x = 1
 	cText = []
-
-	
-	num_of_blocks_arr = range(0,len(blocks))
-	print(num_of_blocks_arr)
 	
 	
 	num_of_blocks_arr = range(0,len(blocks))
