@@ -24,7 +24,7 @@ def parse_args():
 def RSA_Dec(c,d,N):
 	
 	n = N/2
-	r = n/2
+	r = n//2
 	c = bin(c)
 	c = c[2:]
 	
@@ -38,40 +38,51 @@ def RSA_Dec(c,d,N):
 	mbit = r-24
 	
 	m = c**d%N
+
+	#The below function is the same as the above 
+	m = pow(c,d)%N
 	
+	print(m)
+	remove_padding(m,n)
+	exit()
 	return m
 
+def remove_padding(padded_m,n):
+	bin_mess = bin(padded_m)
 
+
+	message = padded_m
+	return message
+	
 if __name__ =="__main__":
     key,infile,outfile = parse_args()
 
 	
     f = open(infile,'r')
     c = f.read()
-	c = int(c)
+    c = int(c)
 
 
     fkey = open(key,'r')
     key = fkey.readlines()
 
-	f.close()
+    f.close()
 
-	LenN = int(key[0])
-	r = k//2
+    LenN = int(key[0])
+    r = k//2
 
-	d = int(key[2])
-	N = int(key[1])
+    d = int(key[2])
+    N = int(key[1])
 
-	Clen = m.bit_length()
+    Clen = m.bit_length()
 	
-	if D%2 == 1:
-		D+=1
+    if D%2 == 1:
+        D+=1
 	
-	m = RSA_Dec(c,d,N)
+    m = RSA_Dec(c,d,N)
 
-	f.open(outfile,'w')
-	f.write(m)
-	f.close()
+    f.open(outfile,'w')
+    f.write(m)
+    f.close()
 
-    print(type(key))
     print(key)
