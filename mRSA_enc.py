@@ -1,16 +1,9 @@
 import math
 import argparse
-
+import random
 import sys
 sys.path.insert(1,"PyPl/PyPl")
 
-from Crypto.Cipher import AES
-from multiprocessing import Pool
-from Crypto.Util.strxor import strxor
-from sys import getsizeof
-from Crypto.Random import get_random_bytes
-from Crypto.Util import number
-from Crypto.Util.number import long_to_bytes
 
 def parse_args():
 	parser = argparse.ArgumentParser()
@@ -28,7 +21,7 @@ def parse_args():
 	return key,infile,outfile
 
 def RSA_ENC(r,mesBitLen,mes,e,N):
-	
+
 	if r-24 < 0:
 		print("n is too small")
 		return -1
@@ -36,48 +29,50 @@ def RSA_ENC(r,mesBitLen,mes,e,N):
 	if mesBitLen > r-24:
 		print("Error Message is too Large")
 		return -1
+
 	elif mesBitLen < r-24:
-		
-	
-	
-	chk = 1
+		fe = (r-24)-mesBitLen
+		mee = mes.zfill(fe)
+
+	chk = 0
+
 
 	while chk != 1:
 		ctr = 0
 
-		rpad = random.getrandbits(r)
-		rpad = rpad.to_bytes()
-		
+		rpad = bin(random.getrandbits(r))[2:]
+
+		rpad = bytearray(rpad,'utf-8')
+
 		for i in rpad:
 			if i == b'0x00':
 				ctr+=1
-		
+
 		if ctr == 0:
-			chk = 0
+			chk = 1
 
 
-	st = b'0x00'
-	ed = b'0x02'
-	mes = mes.to_bytes()
-	paddedm = st+ed+rpad+st+mes
+	st = b'00000000'
+	ed = b'00000010'
+	mee = bytearray(mee,'utf-8')
 
-	m = paddedm.to_int()
+	paddedm = st+ed+rpad+st+mee
+	print(paddedm)	
+	m = int.from_bytes(paddedm,"big")
+	
 	c = m**e%N
-	
+
 	return c
-	
+
 
 if __name__ =="__main__":
-    key,infile,outfile = parse_args()
-
-	
-    f = open(infile,'r')
-    m = f.read()
+	key,infile,outfile = parse_args()
+	f = open(infile,'r')
+	m = f.read()
 	m = int(m)
 
-
-    fkey = open(key,'r')
-    key = fkey.readlines()
+	fkey = open(key,'r')
+	key = fkey.readlines()
 
 	f.close()
 	k = int(key[0])
@@ -87,16 +82,18 @@ if __name__ =="__main__":
 	N = int(key[1])
 
 	D = m.bit_length()
-	
+
 	if D%2 == 1:
 		D+=1
-	
 
-	c = RSA_ENC(r,D,m,e,N)
-	f.open(outfile,'w')
-	f.write(c)
+	s = bin(m)[2:]
+	
+	c = RSA_ENC(r,D,s,e,N)
+	
+	f = open(outfile,'w')
+	f.write(str(c))
 	f.close()
 
 	print (c)
-    print(type(key))
-    print(key)
+	print(type(key))
+	print(key)
