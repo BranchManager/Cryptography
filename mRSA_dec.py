@@ -22,7 +22,23 @@ def parse_args():
 	return key,infile,outfile
 
 def RSA_Dec(c,d,N):
+	
+	n = N/2
+	r = n/2
+	c = bin(c)
+	c = c[2:]
+	
+	
+#N = 256
+#n = 128
+#r = 64
+	
+#0x00,0x02,(0x01,0x02,0x06,0x05,0x03),0x00,m
+
+	mbit = r-24
+	
 	m = c**d%N
+	
 	return m
 
 

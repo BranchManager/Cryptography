@@ -2,7 +2,7 @@ import math
 import argparse
 
 import sys
-sys.path.insert(1,"../PyPl/PyPl")
+sys.path.insert(1,"PyPl/PyPl")
 
 from Crypto.Cipher import AES
 from multiprocessing import Pool
@@ -36,9 +36,26 @@ def RSA_ENC(r,mesBitLen,mes,e,N):
 	if mesBitLen > r-24:
 		print("Error Message is too Large")
 		return -1
+	elif mesBitLen < r-24:
+		
 	
-	rpad = random.getrandbits(r)
-	rpad = rpad.to_bytes()
+	
+	chk = 1
+
+	while chk != 1:
+		ctr = 0
+
+		rpad = random.getrandbits(r)
+		rpad = rpad.to_bytes()
+		
+		for i in rpad:
+			if i == b'0x00':
+				ctr+=1
+		
+		if ctr == 0:
+			chk = 0
+
+
 	st = b'0x00'
 	ed = b'0x02'
 	mes = mes.to_bytes()
@@ -46,6 +63,7 @@ def RSA_ENC(r,mesBitLen,mes,e,N):
 
 	m = paddedm.to_int()
 	c = m**e%N
+	
 	return c
 	
 
@@ -73,6 +91,7 @@ if __name__ =="__main__":
 	if D%2 == 1:
 		D+=1
 	
+
 	c = RSA_ENC(r,D,m,e,N)
 	f.open(outfile,'w')
 	f.write(c)
