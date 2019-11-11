@@ -1,7 +1,7 @@
 import argparse
 import sys
 import math
-sys.path.insert(1,"PyPl/PyPl")
+sys.path.insert(1,"../../PyPl/PyPl")
 from Crypto.Util import number 
 
 def parse_args():
@@ -71,7 +71,8 @@ if __name__=="__main__":
 		d = EEA(e,o)
 		n = p*q
 		Bitlength = n.bit_length()
-
-	
+		if (Bitlength%2) == 1:
+			Bitlength+=1
+			
 	FileMaker(Bitlength,n,e,Pub)
 	FileMaker(Bitlength,n,d,Pri)
