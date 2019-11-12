@@ -58,10 +58,16 @@ def RSA_ENC(r,mesBitLen,mes,e,N):
 
 	paddedm = st+ed+rpad+st+mee
 	print(paddedm)	
-	m = int.from_bytes(paddedm,"big")
-	
-	c = m**e%N
-
+	print("above is paddedm")
+	#m = int.from_bytes(paddedm,"big")
+	m = int(paddedm,2)
+	print(m)
+	print("welll")
+	print(bin(m))
+	#exit()
+	c = pow(m,e)%N
+	print("cipher is")
+	print(c)
 	return c
 
 

@@ -22,11 +22,13 @@ def parse_args():
 	return key,infile,outfile
 
 def RSA_Dec(c,d,N):
+	print(c)
+	
 	
 	n = N/2
 	r = n//2
-	c = bin(c)
-	c = c[2:]
+	#c = bin(c)
+	#c = c[2:]
 	
 	
 #N = 256
@@ -42,7 +44,7 @@ def RSA_Dec(c,d,N):
 	#The below function is the same as the above 
 	m = pow(c,d)%N
 	
-	print(m)
+	print(bin(m))
 	remove_padding(m,n)
 	exit()
 	return m
@@ -69,15 +71,15 @@ if __name__ =="__main__":
     f.close()
 
     LenN = int(key[0])
-    r = k//2
+    #r = k//2
 
     d = int(key[2])
     N = int(key[1])
 
-    Clen = m.bit_length()
+    #Clen = m.bit_length()
 	
-    if D%2 == 1:
-        D+=1
+    #if D%2 == 1:
+     #   D+=1
 	
     m = RSA_Dec(c,d,N)
 
