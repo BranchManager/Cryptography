@@ -22,69 +22,84 @@ def parse_args():
 	return key,infile,outfile
 
 def RSA_Dec(c,d,N):
+
 	print(c)
-	
-	
-	n = N/2
+
+
+	n = N//2
 	r = n//2
+
 	#c = bin(c)
 	#c = c[2:]
-	
-	
+
+
 #N = 256
 #n = 128
 #r = 64
-	
+
 #0x00,0x02,(0x01,0x02,0x06,0x05,0x03),0x00,m
 
 	mbit = r-24
-	
-	m = c**d%N
 
 	#The below function is the same as the above 
-	m = pow(c,d)%N
-	
+
+	m = pow(c,d,N)
+
 	print(bin(m))
-	remove_padding(m,n)
-	exit()
+
+	m = remove_padding(m,n)
 	return m
 
 def remove_padding(padded_m,n):
-	bin_mess = bin(padded_m)
+	zre = 0
+	bin_mess = bin(padded_m)[2:]
+	ctr = 0
 
-
-	message = padded_m
+	for i in bin_mess:
+		print(zre)
+		if i == '0':
+			zre+=1
+		elif i == '1':
+			zre = 0
+		if zre == 8:
+			bin_mess = bin_mess[ctr:]
+			break
+		ctr+=1
+	
+	message = int(bin_mess,2)
+	print(message)
 	return message
-	
+
 if __name__ =="__main__":
-    key,infile,outfile = parse_args()
+	key,infile,outfile = parse_args()
 
+
+	f = open(infile,'r')
+	c = f.read()
+	c = int(c)
+
+
+	fkey = open(key,'r')
+	key = fkey.readlines()
 	
-    f = open(infile,'r')
-    c = f.read()
-    c = int(c)
+	f.close()
 
+	LenN = int(key[0])
+	#r = k//2
 
-    fkey = open(key,'r')
-    key = fkey.readlines()
+	d = int(key[2])
+	N = int(key[1])
 
-    f.close()
+	Clen = c.bit_length()
 
-    LenN = int(key[0])
-    #r = k//2
+	if Clen%2 == 1:
+		Clen+=1
 
-    d = int(key[2])
-    N = int(key[1])
-
-    #Clen = m.bit_length()
+	m = RSA_Dec(c,d,N)
 	
-    #if D%2 == 1:
-     #   D+=1
-	
-    m = RSA_Dec(c,d,N)
 
-    f.open(outfile,'w')
-    f.write(m)
-    f.close()
+	f = open(outfile,'w')
+	f.write(str(m))
+	f.close()
 
-    print(key)
+print(key)

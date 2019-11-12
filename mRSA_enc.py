@@ -65,7 +65,9 @@ def RSA_ENC(r,mesBitLen,mes,e,N):
 	print("welll")
 	print(bin(m))
 	#exit()
+	
 	c = pow(m,e)%N
+	
 	print("cipher is")
 	print(c)
 	return c
@@ -95,7 +97,7 @@ if __name__ =="__main__":
 	s = bin(m)[2:]
 	
 	c = RSA_ENC(r,D,s,e,N)
-	
+
 	f = open(outfile,'w')
 	f.write(str(c))
 	f.close()
