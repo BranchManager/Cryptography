@@ -33,7 +33,7 @@ def RSA_ENC(r,mesBitLen,mes,e,N):
 		return -1
 
 	elif mesBitLen < r-24:
-		fe = (r-24)-mesBitLen
+		fe = (r-24)
 		print(fe)
 
 		mee = mes.zfill(fe)
@@ -44,9 +44,11 @@ def RSA_ENC(r,mesBitLen,mes,e,N):
 	while chk != 1:
 		ctr = 0
 		
-		rpad = bin(random.getrandbits(r))[2:]
-			
+		rpad = random.getrandbits(r)
+		rpad = bin(rpad)[2:].zfill(r)
 		print(rpad)
+		print(len(rpad))
+		print(r)
 		curByte = 0
 		
 		Ctr = 0

@@ -55,20 +55,20 @@ def RSA_Dec(c,d,N,lenN):
 	#print(bin(m))
 	print(len(e))
 	#m = remove_padding(m,nna)
-	
-	oye = textwrap.wrap(e,8)
-	padr = 0
-	ctr = 0
-	print(oye)
-	for i in oye:
-		if i == '00000000':
-			padr += 1
-		if padr == 2:
-			e = e[ctr:]
-			break
-		ctr+=8	
-		
+	e = e[mbit:]
 	print(e)
+	#oye = textwrap.wrap(e,8)
+	#padr = 0
+	#ctr = 0
+	#print(oye)
+	#for i in oye:
+#		if i == '00000000':
+#			padr += 1
+#		if padr == 2:
+#			e = e[ctr:]
+#			break
+#		ctr+=8	
+#	print(e)
 	return int(e,2)
 
 def remove_padding(padded_m,n):
