@@ -1,0 +1,63 @@
+#!/usr/bin/env python3.7
+from cbc_modes import *
+
+
+def cbcDec(blocks,outfile,key):	
+	
+	i = len(blocks)-2
+	cText = []
+	
+		
+	cipher = AES.new(key,AES.MODE_ECB)
+	
+	reth = key
+	IV = cipher.encrypt(reth[16:])
+	print (len(IV))
+
+	while i > 0:
+
+
+		cNext = strxor(cipher.decrypt(blocks[i]),blocks[i-1])
+		cText.insert(0,cNext)
+		i = i-1
+
+	
+	cText.insert(0,strxor(cipher.decrypt(blocks[i]),IV))
+	
+	#remove padding
+
+	pBlock = cText[len(cText)-1]
+	print(pBlock)
+	rem = BLOCK_SIZE- pBlock[len(pBlock)-1]
+	cText[len(cText)-1] = pBlock[:rem]
+	
+	print(pBlock)
+
+	file = open(outfile,"wb")
+	
+	for i in cText:
+		print(i)
+		file.write(i)
+	
+
+
+if __name__=="__main__":
+
+	key,infile,outfile = parse_args()
+	
+	f = open(infile,'rb')
+	inn = f.read()
+	
+	print(key)
+	fkey = open(key,'r')
+	keyinn = fkey.read()
+	
+	print(keyinn)
+	keyinn = keyinn.rstrip(' \t\r\n\0') 
+	
+	bytekey = bytes.fromhex(keyinn)
+	print(len(bytekey))
+
+	blockArr = divide_into_blocks(inn)
+	
+	cbcDec(blockArr,outfile,bytekey)
