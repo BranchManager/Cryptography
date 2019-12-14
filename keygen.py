@@ -47,6 +47,6 @@ if __name__=="__main__":
     with open(PubF,"wb") as f:
         f.write(csr.public_bytes(serialization.Encoding.PEM))
     with open(PrivF, "wb") as f:
-        f.write(private_key.private_bytes(encoding=serialization.Encoding.PEM,format=serialization.PrivateFormat.TraditionalOpenSSL,encryption_algorithm=serialization.BestAvailableEncryption(b"yoyo"),))
+        f.write(private_key.private_bytes(encoding=serialization.Encoding.PEM,format=serialization.PrivateFormat.TraditionalOpenSSL,encryption_algorithm=serialization.NoEncryption(),))#BestAvailableEncryption(b"yoyo"),))
     
 
