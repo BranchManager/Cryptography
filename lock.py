@@ -8,6 +8,7 @@ from cryptography.x509.oid import NameOID
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa,ec
+from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 
@@ -30,6 +31,14 @@ def parse_args():
 
     return Dir,pubk,prik,sub
 
+  
+def sign_it(enc_AES_key_to_sign, private_signing_key,):
+  if isinstance(private_signing_key, rsa.RSAPrivateKey):
+      print("now")
+      #now we start the signing process
+#def encrypt_key():    
+
+ # return
 
 
 def ReccurseLibrary(Dir):
@@ -44,11 +53,24 @@ if __name__=="__main__":
 
     Dir,pubk,prik,sub = parse_args()
     x509c = open(pubk,"rb")
-    data = x509c.read()  
+    data = x509c.read() 
+    key_file = open(prik,"rb")
+    
+    
     x509c.close()
     
     cert = x509.load_pem_x509_certificate(data,default_backend())
 
+    #with open(prik,'rb') as keyf:
+    
+    priv_key = serialization.load_pem_private_key(key_file.read(),password=None, backend=default_backend())
+    #signed_key = sign_it(aes_key,priv_key)
+
+    print(priv_key)
+    print("testing")
+    print(cert.public_key())
+
+    exit()
     for i in cert.subject:
         if i.value != sub:
             print("Incorrect Subject.")
@@ -65,16 +87,16 @@ if __name__=="__main__":
 
     nonce = os.urandom(11)
 
-    if isinstance(cert.public_key,rsa.RSAPublicKey) == True:
-
-    else:
-        i = 0
-
+	#sign_it()
+    
     for subdir, dirs, files in os.walk(Dir):
         for file in files:
-            os.path.join(subdir, file)
-    
-    
-        
-    
-
+            tmp = os.path.join(subdir, file)
+            f = open(tmp,'rb')
+            
+            
+            
+  #key = get_random_bytes(32)
+	#cipher = AES.new(key, AES.MODE_GCM)
+	#ciphertext, tag = cipher.encrypt_and_digest(data)
+            
