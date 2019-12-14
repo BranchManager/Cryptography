@@ -33,9 +33,18 @@ def parse_args():
     return Dir,pubk,prik,sub
 
   
-def sign_orverify_it(enc_AES_key_to_sign, private_signing_key,):  #Noah function
-  if isinstance(private_signing_key, rsa.RSAPrivateKey):
-      print("now")
+def sign_it(enc_AES_key_to_sign, private_signing_key,):  #Noah function
+  #if isinstance(private_signing_key, rsa.RSAPrivateKey):
+    print(enc_AES_key_to_sign)
+    print(private_signing_key)
+
+    signature = private_signing_key.sign(
+        enc_AES_key_to_sign,
+        ec.ECDSA(hashes.SHA256())
+    )
+    print(signature)
+    return signature
+      
       #now we start the signing process
 def encrypt_key(RSA_key, AES_key):   #Noah Function
     print(type(AES_key))  
@@ -83,7 +92,8 @@ if __name__=="__main__":
     print(cert.public_key())
 
     aes_key = b"bily"
-    encrypt_key(cert.public_key(),aes_key)
+    enc_key = encrypt_key(cert.public_key(),aes_key)
+    sign_it(enc_key, priv_key)
 
     exit()
     for i in cert.subject:
