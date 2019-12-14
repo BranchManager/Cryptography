@@ -9,6 +9,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa,ec
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
+from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 
@@ -32,13 +33,23 @@ def parse_args():
     return Dir,pubk,prik,sub
 
   
-def sign_it(enc_AES_key_to_sign, private_signing_key,):
+def sign_orverify_it(enc_AES_key_to_sign, private_signing_key,):  #Noah function
   if isinstance(private_signing_key, rsa.RSAPrivateKey):
       print("now")
       #now we start the signing process
-#def encrypt_key():    
-
- # return
+def encrypt_key(RSA_key, AES_key):   #Noah Function
+    print(type(AES_key))  
+    cipherKey = RSA_key.encrypt(
+        AES_key,
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    )
+    print("cipher")
+    print(cipherKey)
+    return
 
 
 def ReccurseLibrary(Dir):
@@ -64,11 +75,15 @@ if __name__=="__main__":
     #with open(prik,'rb') as keyf:
     
     priv_key = serialization.load_pem_private_key(key_file.read(),password=None, backend=default_backend())
+    
     #signed_key = sign_it(aes_key,priv_key)
 
     print(priv_key)
     print("testing")
     print(cert.public_key())
+
+    aes_key = b"bily"
+    encrypt_key(cert.public_key(),aes_key)
 
     exit()
     for i in cert.subject:
