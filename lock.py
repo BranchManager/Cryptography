@@ -43,7 +43,9 @@ def sign_it(enc_AES_key_to_sign, private_signing_key,):  #Noah function
         ec.ECDSA(hashes.SHA256())
     )
     print(signature)
-    return signature
+    with open('keyfile.sig','wb') as f:
+        f.write(signature)
+    #return signature
       
       #now we start the signing process
 def encrypt_key(RSA_key, AES_key):   #Noah Function
@@ -93,7 +95,8 @@ if __name__=="__main__":
 
     aes_key = b"bily"
     enc_key = encrypt_key(cert.public_key(),aes_key)
-    sign_it(enc_key, priv_key)
+    signature = sign_it(enc_key, priv_key)
+
 
     exit()
     for i in cert.subject:
