@@ -18,8 +18,8 @@ echo "data in dir3 file1" > big_dir/dir3/file1
 echo "data in dir3 file2" > big_dir/dir3/file2
 echo "data in dir3 file3" > big_dir/dir3/file3
 
-./keygen2 -t rsa -s testing -pub rspub -priv rspriv
-./keygen2 -t ec -s testing -pub ecpub -priv ecpriv
+./keygen -t rsa -s testing -pub rspub -priv rspriv
+./keygen -t ec -s testing -pub ecpub -priv ecpriv
 
 ./lock -d big_dir -p rspub -r ecpriv -s testing
 
