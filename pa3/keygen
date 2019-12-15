@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 import argparse
 import sys
 from datetime import datetime,timedelta
@@ -50,4 +50,3 @@ if __name__=="__main__":
     with open(PrivF, "wb") as f:
         f.write(private_key.private_bytes(encoding=serialization.Encoding.PEM,format=serialization.PrivateFormat.TraditionalOpenSSL,encryption_algorithm=serialization.NoEncryption(),))#BestAvailableEncryption(b"yoyo"),))
     
-
