@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.7
+#!/usr/bin/env python3
 import argparse
 import sys
 import os
@@ -108,12 +108,3 @@ if __name__=="__main__":
             wf = open(tmp,"wb")
             wf.write(ct)
             wf.close()
-    
-        
-
-            
-    
-    
-        
-    
-
