@@ -1,15 +1,16 @@
 import argparse
 import sys
+import os
 from datetime import datetime,timedelta
 from cryptography.hazmat.primitives import hashes
 from cryptography import x509
 from cryptography.x509.oid import NameOID
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import utils
 from cryptography.hazmat.primitives.asymmetric import rsa,ec
+from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.hazmat.primitives.asymmetric import padding
-from cryptography.exceptions import InvalidSignature
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -44,9 +45,7 @@ def verify(signature, Public_ec_key,enckey):
     )
     
 def dec_key(cipherkey,privkey):
-    print("cipher key \n")
-    print(cipherkey)
-    print(privkey)
+ 
     aes_key = privkey.decrypt(
         cipherkey,
         padding.OAEP(
@@ -57,9 +56,12 @@ def dec_key(cipherkey,privkey):
         )
          
     )
-    print("the final real aes key")
-    print(aes_key)
+   
     return aes_key
+
+def del_keyfile():
+    os.remove("keyfile")
+    os.remove("keyfile.sig")
 
 if __name__=="__main__":
 
@@ -73,25 +75,41 @@ if __name__=="__main__":
 
     privkey = priv.read()
     signed = keysig.read()
+    nonce = keyfile.read(11)
     key = keyfile.read()
 
-    print("key in unlock \n")
-    print(key)
-
+    #loading in the x509 cert into a X509 class object instance
     cert = x509.load_pem_x509_certificate(pub,default_backend())
+    
+    #loading in a priv key that is encoded in PEM format
+    #priv_keyRSA is the RSA Private key we will use to decrypt the AES key.
+
     priv_keyRSA = serialization.load_pem_private_key(privkey,password=None, backend=default_backend())
+    
     #this try catch calls the verify function to verify the signature
     #if it does not verify we will get a messag stating invalid sig and exit the program
     try:
+    #cert.public_key() is in this case the EC public key.
+    #key in this case is the Signed keyfile. It was signed with the EC private key.  
         verify(signed, cert.public_key(),key)
     except InvalidSignature:
         print("Invalid Signature.....Exiting")
         exit()
 
+    del_keyfile()
+
+    #aes_key is the aes key that was written to keyfile.
+    #key in this case is keyfile read into bytes.
+    #keyfile holds the aes key encrypted.
     aes_key = dec_key(key,priv_keyRSA)
-    print(aes_key)
-
-
-
-
+    aesgcm = AESGCM(aes_key)
+    for subdir, dirs, files in os.walk(Dir):
+        for file in files:
+            tmp = os.path.join(subdir, file)
+            f = open(tmp,'rb')
+            ct = aesgcm.decrypt(nonce,f.read(),None)
+            f.close()
+            wf = open(tmp,"wb")
+            wf.write(ct)
+            wf.close()
     

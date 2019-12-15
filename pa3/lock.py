@@ -33,22 +33,18 @@ def parse_args():
     return Dir,pubk,prik,sub
 
   
-def verify_it(pub_key, key):  
-    
-    #checking key vs public key to make sure it works
-    validate = pub_key.verify(key,ec.ECDSA(hashes.SHA256()))
+def sign_it(enc_AES_key_to_sign, private_signing_key,):  #Noah function
+  #if isinstance(private_signing_key, rsa.RSAPrivateKey):
 
-    if (validate == key):
-        return True
+    signature = private_signing_key.sign(enc_AES_key_to_sign,ec.ECDSA(hashes.SHA256()))
 
-    else:
-        return False
-    
+   
+    with open('keyfile.sig','wb') as f:
+        f.write(signature)
+    #return signature
 
 def encrypt_key(RSA_key, AES_key):
-    print("The actual key")
-    print(AES_key)   #Noah Function
-    print(type(AES_key))  
+      
     cipherKey = RSA_key.encrypt(
         AES_key,
         padding.OAEP(
@@ -57,13 +53,9 @@ def encrypt_key(RSA_key, AES_key):
             label=None
         )
     )
-    print("cipher")
-    print(cipherKey)
+    
     return cipherKey
 
-def del_keyfile():
-    os.remove("keyfile")
-    os.remove("keyfile.sig")
 
 def ReccurseLibrary(Dir):
     for filename in os.listdir(Dir):
@@ -78,6 +70,9 @@ if __name__=="__main__":
     Dir,pubk,prik,sub = parse_args()
     x509c = open(pubk,"rb")
     data = x509c.read() 
+    key_file = open(prik,"rb")
+    keyfile = open("keyfile","wb")
+
     
     x509c.close()
     
@@ -87,35 +82,37 @@ if __name__=="__main__":
         if i.value != sub:
             print("Incorrect Subject.")
             exit()
-   
-   #to open the keyfile and read in keyfile
-    with open(some_key, 'rb') as keyfile:
-        key = keyfile.read()
-
-    #to open the keyfile.sig and read in keyfile.sig
-    with open(some_key, 'rb') as keyfile:
-        pub_key = keyfile.read()
-
-    #key will be the decrypted keyfile.sig, pub_key will be the key in just keyfile
-    check = verify_it(pub_key, key)
     
-    if (check != True)
-        exit ()
+    priv_key = serialization.load_pem_private_key(key_file.read(),password=None, backend=default_backend())
+    
+    key = AESGCM.generate_key(bit_length=128)
 
-    
-    #fetch aes key from keyfile // I don't know how to so I'm commenting this here
+    enc_key = encrypt_key(cert.public_key(),key)
 
+    aesgcm = AESGCM(key)
+    nonce = os.urandom(11)
     
-    #put the delete keyfile, and keyfile.sig in a function to make debugging easier
-    del_keyfile()
-    
+    keyfile.write(nonce)
+    keyfile.write(enc_key)
+    keyfile.close()
+
+    sign_it(enc_key, priv_key)
+
     for subdir, dirs, files in os.walk(Dir):
         for file in files:
             tmp = os.path.join(subdir, file)
             f = open(tmp,'rb')
-            ct = aesgcm.decrypt(nonce,f.read(),None)
-            print(ct)
+            ct = aesgcm.encrypt(nonce,f.read(),None)
             f.close()
             wf = open(tmp,"wb")
             wf.write(ct)
             wf.close()
+    
+        
+
+            
+    
+    
+        
+    
+
