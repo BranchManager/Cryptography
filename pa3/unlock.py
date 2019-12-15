@@ -12,6 +12,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa,ec
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.exceptions import InvalidSignature
 
 def parse_args():
     parser = argparse.ArgumentParser()
