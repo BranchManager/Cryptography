@@ -1,0 +1,117 @@
+#!/usr/bin/env python3.7
+import argparse
+import sys
+import os
+from datetime import datetime,timedelta
+from cryptography.hazmat.primitives import hashes
+from cryptography import x509
+from cryptography.x509.oid import NameOID
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa,ec
+from cryptography.hazmat.primitives.serialization import load_pem_private_key
+from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.exceptions import InvalidSignature
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d","--dir",help="Dir to Unlock")
+    parser.add_argument("-p","--pubk",help="Action Public Key")
+    parser.add_argument("-r","--prik",help="Action Private Key")
+    parser.add_argument("-s","--sub",help="Who are we unlocking")
+    args=parser.parse_args()
+
+    if args.dir:
+        Dir = args.dir
+    if args.pubk:
+        pubk = args.pubk
+    if args.prik:
+        prik = args.prik
+    if args.sub:
+        sub = args.sub
+
+    return Dir,pubk,prik,sub
+
+def verify(signature, Public_ec_key,enckey):
+    chosen_hash = hashes.SHA256()
+    hasher = hashes.Hash(chosen_hash, default_backend())
+    #hasher.update(b"data & ")
+    #hasher.update(b"more data")
+    digest = hasher.finalize()
+    Public_ec_key.verify(
+        signature,
+        enckey,
+        ec.ECDSA(hashes.SHA256())
+
+    )
+    
+def dec_key(cipherkey,privkey):
+ 
+    aes_key = privkey.decrypt(
+        cipherkey,
+        padding.OAEP(
+            mgf = padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+                
+        )
+         
+    )
+   
+    return aes_key
+
+def del_keyfile():
+    os.remove("keyfile")
+    os.remove("keyfile.sig")
+
+if __name__=="__main__":
+
+    Dir,pubk,prik,sub = parse_args()
+
+    publickey = open(pubk,'rb')
+    pub = publickey.read()
+    keyfile = open('keyfile','rb')
+    keysig = open('keyfile.sig','rb')
+    priv = open(prik,'rb')
+
+    privkey = priv.read()
+    signed = keysig.read()
+    nonce = keyfile.read(11)
+    key = keyfile.read()
+
+    #loading in the x509 cert into a X509 class object instance
+    cert = x509.load_pem_x509_certificate(pub,default_backend())
+    
+    #loading in a priv key that is encoded in PEM format
+    #priv_keyRSA is the RSA Private key we will use to decrypt the AES key.
+
+    priv_keyRSA = serialization.load_pem_private_key(privkey,password=None, backend=default_backend())
+    
+    #this try catch calls the verify function to verify the signature
+    #if it does not verify we will get a messag stating invalid sig and exit the program
+    try:
+    #cert.public_key() is in this case the EC public key.
+    #key in this case is the Signed keyfile. It was signed with the EC private key.  
+        verify(signed, cert.public_key(),key)
+    except InvalidSignature:
+        print("Invalid Signature.....Exiting")
+        exit()
+
+    del_keyfile()
+
+    #aes_key is the aes key that was written to keyfile.
+    #key in this case is keyfile read into bytes.
+    #keyfile holds the aes key encrypted.
+    aes_key = dec_key(key,priv_keyRSA)
+    aesgcm = AESGCM(aes_key)
+    for subdir, dirs, files in os.walk(Dir):
+        for file in files:
+            tmp = os.path.join(subdir, file)
+            f = open(tmp,'rb')
+            ct = aesgcm.decrypt(nonce,f.read(),None)
+            f.close()
+            wf = open(tmp,"wb")
+            wf.write(ct)
+            wf.close()
+    
