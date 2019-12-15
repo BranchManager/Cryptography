@@ -18,16 +18,16 @@ echo "data in dir3 file1" > big_dir/dir3/file1
 echo "data in dir3 file2" > big_dir/dir3/file2
 echo "data in dir3 file3" > big_dir/dir3/file3
 
-python3 keygen.py -t rsa -s testing -pub rspub -priv rspriv
-python3 keygen.py -t ec -s testing -pub ecpub -priv ecpriv
+./keygen2 -t rsa -s testing -pub rspub -priv rspriv
+./keygen2 -t ec -s testing -pub ecpub -priv ecpriv
 
-python3 lock.py -d big_dir -p rspub -r ecpriv -s testing
+./lock -d big_dir -p rspub -r ecpriv -s testing
 
 cat big_dir/dir1/file1
 cat big_dir/dir2/file2
 cat big_dir/dir3/file3
 
-python3 unlock.py -d big_dir -p ecpub -r rspriv -s testing
+./unlock -d big_dir -p ecpub -r rspriv -s testing
 
 
 cat big_dir/dir1/file1
